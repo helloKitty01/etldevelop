@@ -20,3 +20,6 @@ import datetime
 
 def index(request):
   return render('index.mako', request, dict(date=datetime.datetime.now()))
+  
+def rdb_hive(request):
+  return render('rdb_hive.mako', request, dict(date=datetime.datetime.now()))

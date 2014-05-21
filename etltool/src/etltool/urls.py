@@ -19,4 +19,5 @@ from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('etltool',
   url(r'^$', 'views.index'),
+  url(r'^rdb_hive/?$', 'views.rdb_hive')
 )
