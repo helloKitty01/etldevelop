@@ -418,8 +418,8 @@
     <div class="sidebar-nav">
         <ul class="nav nav-list">
             <li class="nav-header">操作</li>
-            <li><a href="#"><i class="fa fa-wrench"></i> HDFS <==> Traditional RDB</a></li>
-            <li><a href="#"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
+            <li><a href="/etltool/rdb_hdfs"><i class="fa fa-wrench"></i> Traditional RDB ==> HDFS</a></li>
+            <li><a href="/etltool/rdb_hive"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Hive ==> Traditional</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HDFS</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> HDFS ==> Local File System</a></li>
@@ -1598,8 +1598,6 @@ $.jHueTour({
   viewModel.fetchHiveDatabases();
    ko.applyBindings(viewModel);
 function begin(){
-
-var data = {"databases":8,"tableName":"testindex"}; 
 	var data={
 		rdbdatabase:$('#rdbdatabase').val(),
 		rdbtable:$('#rdbtable').val(),

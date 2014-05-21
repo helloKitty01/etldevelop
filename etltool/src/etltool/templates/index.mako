@@ -418,8 +418,8 @@
     <div class="sidebar-nav">
         <ul class="nav nav-list">
             <li class="nav-header">操作</li>
-            <li><a href="#"><i class="fa fa-wrench"></i> HDFS <==> Traditional RDB</a></li>
-            <li><a href="#"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
+            <li><a href="/etltool/rdb_hdfs"><i class="fa fa-wrench"></i> Traditional RDB ==> HDFS</a></li>
+            <li><a href="/etltool/rdb_hive"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Hive ==> Traditional</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HDFS</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> HDFS ==> Local File System</a></li>
@@ -437,7 +437,7 @@
           <a href="/metastore/databases">ETL工具</a><span class="divider">&gt;</span>
         </li>
         <li>
-          <a href="/metastore/tables/default">Traditional RDB ==> Hive</a>
+          <a href="/metastore/tables/default">Traditional RDB ==> HDFS</a>
         </li>
       </ul>
     </h1>
@@ -445,7 +445,7 @@
       <p>
         <ul class="nav nav-pills">
           <li class="active"><a href="#step0" class="step">第 1 步：RDB配置</a></li>		  
-          <li><a href="#step1" class="step">第 2 步：Hive配置</a></li>
+          <li><a href="#step1" class="step">第 2 步：HDFS配置</a></li>
         </ul>
 
         <form action="#" method="POST" id="mainForm" class="form-horizontal">
@@ -484,8 +484,8 @@
 	  
         <div id="step1" class="stepDetails hide">
             <fieldset>
-                <div class="alert alert-info"><h3>Hive相关配置</h3>包含hive数据库和相应的表名</div>
-			<div class="control-group">                        
+                <div class="alert alert-info"><h3>HDFS相关配置</h3>导出文件在HDFS上的存储位置</div>
+			<div class="control-group hide">                        
 				<label for="table-field_terminator" class="control-label">Hive数据库</label>
 				<div class="controls">
 					<select name="table-field_terminator_0" id="hivedatabase" data-bind="options: viewModel.hiveDatabases">
@@ -496,7 +496,7 @@
 				</div>
 			</div>			
 
-			<div class="control-group">
+			<div class="control-group hide">
 				<label for="table-name" class="control-label">Hive表名</label>
 				<div class="controls">
 				<input data-bind="value: $root.hiveTableName" name="table-name" id="hivetable"  type='text'   class=""  />
@@ -504,7 +504,17 @@
 					默认为RDB相应表名
 					</p>
 				</div>
-			</div>				
+			</div>
+
+            <div id="location" class="control-group">
+             <label for="table-external_location" class="control-label">External location</label>
+			<div class="controls">
+                <input name="table-external_location" value="" type='text' id='data_dir'  class="pathChooser input-xxlarge" placeholder="/user/user_name/data_dir" /><a class="btn fileChooserBtn" href="#" data-filechooser-destination="table-external_location">...</a>
+                <span class="help-block">
+                        RDB数据导出的路径（位于 HDFS 上）
+                        </span>
+                    </div>
+                </div>			
             </fieldset>
         </div>
 
@@ -1599,15 +1609,15 @@ $.jHueTour({
    ko.applyBindings(viewModel);
 function begin(){
 
-var data = {"databases":8,"tableName":"testindex"}; 
 	var data={
 		rdbdatabase:$('#rdbdatabase').val(),
 		rdbtable:$('#rdbtable').val(),
 		hivedatabase:$('#hivedatabase').val(),
-		hivetable:$('#hivetable').val(),		
+		hivetable:$('#hivetable').val(),
+		data_dir:$('#data_dir').val()
 	}
     var request = {
-      url: 'http://10.60.1.149:4567/etl/rdbtohive?userid=1',
+      url: 'http://10.60.1.149:4567/etl/rdbtohdfs?userid=1',
       dataType: 'jsonp',
 	  jsonp:'jsonpcallback',
 	  jsonpcallback:'skycallback',

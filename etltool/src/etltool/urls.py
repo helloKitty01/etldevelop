@@ -19,5 +19,6 @@ from django.conf.urls.defaults import patterns, url
 
 urlpatterns = patterns('etltool',
   url(r'^$', 'views.index'),
-  url(r'^rdb_hive/?$', 'views.rdb_hive')
+  url(r'^rdb_hive/?$', 'views.rdb_hive'),
+  url(r'^rdb_hdfs/?$', 'views.rdb_hdfs')
 )
