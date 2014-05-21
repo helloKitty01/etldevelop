@@ -212,6 +212,9 @@
 
 	<script src="/static/ext/js/jquery/plugins/jquery-fieldselection.js" type="text/javascript"></script>
 	<script src="/etltool/static/js/autocomplete.utils.js" type="text/javascript" charset="utf-8"></script>
+	
+
+
 
   <script type="text/javascript" charset="utf-8">
     $(document).ready(function () {
@@ -454,7 +457,7 @@
         <div id="step0" class="stepDetails">
             <fieldset>
                 <div class="alert alert-info"><h3>RDB相关配置</h3>包含RDB数据源和表</div>
-				
+
 			<div class="control-group">                        
 				<label for="table-field_terminator" class="control-label">RDB数据源</label>
 				<div class="controls">
@@ -511,7 +514,7 @@
 			<div class="controls">
                 <input name="table-external_location" value="" type='text' id='data_dir'  class="pathChooser input-xxlarge" placeholder="/user/user_name/data_dir" /><a class="btn fileChooserBtn" href="#" data-filechooser-destination="table-external_location">...</a>
                 <span class="help-block">
-                        RDB数据导出的路径（位于 HDFS 上）
+                        RDB数据导出的路径（位于 HDFS 上）,<FONT SIZE=3 color="#FF0000">需要新建</font>
                         </span>
                     </div>
                 </div>			
@@ -902,6 +905,11 @@
 		  <button type="button" id="begin" class="btn btn-primary hide" data-bind="click:begin">开始</button>
       </div>
       </form>
+	  	<div class="container hide">
+      <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
+        <div class="bar" style="width: 90%"></div>
+      </div>
+    </div>
       </p>
     </div>
 </div>
@@ -1608,7 +1616,8 @@ $.jHueTour({
   viewModel.fetchHiveDatabases();
    ko.applyBindings(viewModel);
 function begin(){
-
+	startProcess();
+	$('.container').removeClass('hide');
 	var data={
 		rdbdatabase:$('#rdbdatabase').val(),
 		rdbtable:$('#rdbtable').val(),
@@ -1629,6 +1638,29 @@ function begin(){
     };
     $.ajax(request);
   };
+    function startProcess() {
+		progressInterval = window.setInterval(function () {
+		var request = {
+		  url: 'http://10.60.1.149:4567/process',
+		  dataType:'jsonp',
+		  jsonp:'jsonpcallback',
+		  jsonpcallback:'skycallback',
+		  type: 'GET',
+		  success: function(data) {
+			if (data.status === 0) {
+			 $.jHueNotify.info("导出成功a！");
+			} else if (data.status === -1){
+			  window.clearInterval(progressInterval);
+			$.jHueNotify.info("导出成功b！");			  
+			} else{
+			  window.clearInterval(progressInterval);
+			  $.jHueNotify.info("导出成功c！");
+			}
+		  },
+		};
+		$.ajax(request);
+      }, 200);
+    }
     function hello(){alert('hello');};
     $("#rdbdatabase").change(function () {
 	var name=$(this).val();
