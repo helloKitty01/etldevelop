@@ -24,6 +24,9 @@ function RdbmsViewModel() {
   self.databases = ko.observableArray();
   self.selectedDatabase = ko.observable(0);
   self.hiveTableName=ko.observable("");
+  self.processName=ko.observable("Map");
+  self.processStatus=ko.observable("...");
+  self.processPercentage=ko.observable("0");
   self.ddl=ko.mapping.fromJS({
 	'server':-1,
 	'tableName':null,
@@ -386,6 +389,22 @@ function RdbmsViewModel() {
   };
 
   self.fetchDatabases = function() {
+    if (self.server()) {
+      var request = {
+        url: 'http://10.60.1.149:4567/datasources/'+self.server().name()+'/showtable?userid=1',
+		dataType:'jsonp',
+		jsonp:'callback',
+        type: 'GET',
+        success: function(data) {
+          if(data.status==0){self.updateDatabases(data.tables);}else{var table = new Array(1);table[0]='none';self.updateDatabases(table);}
+        },
+        error: error_fn
+      };
+      $.ajax(request);
+    }
+  };
+
+  self.fetchProcess = function() {
     if (self.server()) {
       var request = {
         url: 'http://10.60.1.149:4567/datasources/'+self.server().name()+'/showtable?userid=1',

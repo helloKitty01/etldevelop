@@ -423,9 +423,9 @@
             <li class="nav-header">操作</li>
             <li><a href="/etltool/rdb_hdfs"><i class="fa fa-wrench"></i> Traditional RDB ==> HDFS</a></li>
             <li><a href="/etltool/rdb_hive"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
+			<li><a href="/filebrowser"><i class="fa fa-wrench"></i> Local File System <==> HDFS</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Hive ==> Traditional</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HDFS</a></li>
-			<li><a href="#"><i class="fa fa-wrench"></i> HDFS ==> Local File System</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HBase</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> HBase ==> Local File System</a></li>
         </ul>
@@ -514,7 +514,7 @@
 			<div class="controls">
                 <input name="table-external_location" value="" type='text' id='data_dir'  class="pathChooser input-xxlarge" placeholder="/user/user_name/data_dir" /><a class="btn fileChooserBtn" href="#" data-filechooser-destination="table-external_location">...</a>
                 <span class="help-block">
-                        RDB数据导出的路径（位于 HDFS 上）,<FONT SIZE=3 color="#FF0000">需要新建</font>
+                        RDB数据导出的路径（位于 HDFS 上）,<FONT SIZE=3 color="#FF0000">需要新建，不能为已有目录</font>
                         </span>
                     </div>
                 </div>			
@@ -907,7 +907,7 @@
       </form>
 	  	<div class="container hide">
       <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
-        <div class="bar" style="width: 90%"></div>
+        <div class="bar" style="width: 0%"></div>
       </div>
     </div>
       </p>
@@ -1641,25 +1641,33 @@ function begin(){
     function startProcess() {
 		progressInterval = window.setInterval(function () {
 		var request = {
-		  url: 'http://10.60.1.149:4567/process',
+		  url: 'http://10.60.1.149:4567/etl/jobprocess/1',
 		  dataType:'jsonp',
 		  jsonp:'jsonpcallback',
 		  jsonpcallback:'skycallback',
 		  type: 'GET',
 		  success: function(data) {
 			if (data.status === 0) {
-			 $.jHueNotify.info("导出成功a！");
-			} else if (data.status === -1){
-			  window.clearInterval(progressInterval);
-			$.jHueNotify.info("导出成功b！");			  
+			 //$.jHueNotify.info("导出成功a！");
+			 $('.bar').css('width',0);
+			} else if (data.status === 1){
+			 //window.clearInterval(progressInterval);
+			//$.jHueNotify.info("导出成功b！");	
+				$('.bar').css('width',data.process+'%');			
+			} else if (data.status === 2){
+			  $('.bar').css('width',data.process+'%');		  
+			} else if (data.status === 3){
+			 $.jHueNotify.info("导出成功b！");
+			 $('.bar').css('width','100%');			  
 			} else{
 			  window.clearInterval(progressInterval);
-			  $.jHueNotify.info("导出成功c！");
+			  $.jHueNotify.info("失败");
+			   $('.bar').css('width','100%');	
 			}
 		  },
 		};
 		$.ajax(request);
-      }, 200);
+      }, 2000);
     }
     function hello(){alert('hello');};
     $("#rdbdatabase").change(function () {

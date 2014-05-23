@@ -420,9 +420,9 @@
             <li class="nav-header">操作</li>
             <li><a href="/etltool/rdb_hdfs"><i class="fa fa-wrench"></i> Traditional RDB ==> HDFS</a></li>
             <li><a href="/etltool/rdb_hive"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
+			<li><a href="/filebrowser"><i class="fa fa-wrench"></i> Local File System <==> HDFS</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Hive ==> Traditional</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HDFS</a></li>
-			<li><a href="#"><i class="fa fa-wrench"></i> HDFS ==> Local File System</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HBase</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> HBase ==> Local File System</a></li>
         </ul>
@@ -892,6 +892,25 @@
 		  <button type="button" id="begin" class="btn btn-primary hide" data-bind="click:begin">开始</button>
       </div>
       </form>
+	  <div class="container hide">
+	    <table class="table table-striped table-condensed datatables tablescroller-disable">
+          <thead>
+          <tr>
+            <th width="20%">Name</th>
+            <th width="60%">Status</th>
+            <th>Percentage</th>
+          </tr>
+          </thead>
+		  <tbody>
+            <td width="20%" data-bind="text: viewModel.processName"></th>
+            <td width="60%" data-bind="text: viewModel.processStatus"></th>
+            <td data-bind="text: viewModel.processPercentage"></th>
+			</tobody>
+        </table>
+      <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
+        <div class="bar" style="width: 0%"></div>
+      </div>
+    </div>
       </p>
     </div>
 </div>
@@ -1598,11 +1617,14 @@ $.jHueTour({
   viewModel.fetchHiveDatabases();
    ko.applyBindings(viewModel);
 function begin(){
+	startProcess();
+	$('.container').removeClass('hide');
 	var data={
 		rdbdatabase:$('#rdbdatabase').val(),
 		rdbtable:$('#rdbtable').val(),
 		hivedatabase:$('#hivedatabase').val(),
-		hivetable:$('#hivetable').val(),		
+		hivetable:$('#hivetable').val(),
+		data_dir:$('#data_dir').val()
 	}
     var request = {
       url: 'http://10.60.1.149:4567/etl/rdbtohive?userid=1',
@@ -1617,6 +1639,53 @@ function begin(){
     };
     $.ajax(request);
   };
+    function startProcess() {
+		progressInterval = window.setInterval(function () {
+		var request = {
+		  url: 'http://10.60.1.149:4567/etl/jobprocess/1',
+		  dataType:'jsonp',
+		  jsonp:'jsonpcallback',
+		  jsonpcallback:'skycallback',
+		  type: 'GET',
+		  success: function(data) {
+			if (data.status === 0) {
+			 $('.bar').css('width',0);
+			 viewModel.processStatus('...');
+			} else if (data.status === 1){
+			viewModel.processStatus('Running');
+			viewModel.processName('Map');
+			viewModel.processPercentage(data.process+'%');
+				$('.bar').css('width',data.process+'%');			
+			} else if (data.status === 2){
+			viewModel.processStatus('Running');
+			viewModel.processName('Reduce');
+			viewModel.processPercentage(data.process+'%');
+			  $('.bar').css('width',data.process+'%');		  
+			} else if (data.status === 3){
+						viewModel.processStatus('Success');
+			viewModel.processName('Total');
+			viewModel.processPercentage('100%');
+			window.clearInterval(progressInterval);	
+			 $.jHueNotify.info("导出成功！");
+			 $('.bar').css('width','100%');	
+			 $('.progress').removeClass('progress-info');
+			 $('.progress').addClass('progress-success');
+			 //$('.container').hide();		 
+			} else{
+			  window.clearInterval(progressInterval);
+			  			viewModel.processStatus('Failed');
+			viewModel.processName('Total');
+			viewModel.processPercentage('100%');
+			  $.jHueNotify.info("导出失败");
+			   $('.progress-info').css('width','100%');	
+			$('.progress').removeClass('progress-info');
+			 $('.progress').addClass('progress-warning');
+			}
+		  },
+		};
+		$.ajax(request);
+      }, 2000);
+    }
     function hello(){alert('hello');};
     $("#rdbdatabase").change(function () {
 	var name=$(this).val();
