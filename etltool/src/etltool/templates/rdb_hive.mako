@@ -425,11 +425,29 @@
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HDFS</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HBase</a></li>
 			<li><a href="#"><i class="fa fa-wrench"></i> HBase ==> Local File System</a></li>
+			<li>			
+				<div class="control-group">                        
+					<label for="table-field_terminator" class="control-label">FROM</label>
+					<div class="controls">
+						<select name="table-field_terminator_0" id="rdbdatabase" data-bind="options: viewModel.servers,optionsText: 'nice_name',optionsValue: 'name'">
+						</select>
+				</div>
+			</li>
+			<li>			
+				<div class="control-group">                        
+					<label for="table-field_terminator" class="control-label">TO</label>
+					<div class="controls">
+						<select name="table-field_terminator_0" id="rdbdatabase" data-bind="options: viewModel.servers,optionsText: 'nice_name',optionsValue: 'name'">
+						</select>
+				</div>
+			</li>
         </ul>
+
     </div>
+
 </div>
 
-<div class="span9">
+<div class="span9 hide rdbtohive">
   <div class="card card-small" style="margin-top: 0">
     <h1 class="card-heading simple">
       <ul id="breadcrumbs" class="nav nav-pills hueBreadcrumbBar">
@@ -773,18 +791,18 @@
             
 
             <select name="columns-0-column_type" id="id_columns-0-column_type">
-<option value="string">string</option>
-<option value="tinyint">tinyint</option>
-<option value="smallint">smallint</option>
-<option value="int">int</option>
-<option value="bigint">bigint</option>
-<option value="boolean">boolean</option>
-<option value="float">float</option>
-<option value="double">double</option>
-<option value="array">array</option>
-<option value="map">map</option>
-<option value="timestamp">timestamp</option>
-</select>
+			<option value="string">string</option>
+			<option value="tinyint">tinyint</option>
+			<option value="smallint">smallint</option>
+			<option value="int">int</option>
+			<option value="bigint">bigint</option>
+			<option value="boolean">boolean</option>
+			<option value="float">float</option>
+			<option value="double">double</option>
+			<option value="array">array</option>
+			<option value="map">map</option>
+			<option value="timestamp">timestamp</option>
+			</select>
 
             <span class="help-block">
             此列的类型。此界面不呈现某些高级类型（即 structs）。
@@ -798,16 +816,16 @@
                         
 
             <select name="columns-0-array_type" id="id_columns-0-array_type">
-<option value="string">string</option>
-<option value="tinyint">tinyint</option>
-<option value="smallint">smallint</option>
-<option value="int">int</option>
-<option value="bigint">bigint</option>
-<option value="boolean">boolean</option>
-<option value="float">float</option>
-<option value="double">double</option>
-<option value="timestamp">timestamp</option>
-</select>
+			<option value="string">string</option>
+			<option value="tinyint">tinyint</option>
+			<option value="smallint">smallint</option>
+			<option value="int">int</option>
+			<option value="bigint">bigint</option>
+			<option value="boolean">boolean</option>
+			<option value="float">float</option>
+			<option value="double">double</option>
+			<option value="timestamp">timestamp</option>
+			</select>
 
                             <span class="help-block">
                             数组值的类型。
@@ -822,16 +840,16 @@
                         
 
             <select name="columns-0-map_key_type" id="id_columns-0-map_key_type">
-<option value="string">string</option>
-<option value="tinyint">tinyint</option>
-<option value="smallint">smallint</option>
-<option value="int">int</option>
-<option value="bigint">bigint</option>
-<option value="boolean">boolean</option>
-<option value="float">float</option>
-<option value="double">double</option>
-<option value="timestamp">timestamp</option>
-</select>
+			<option value="string">string</option>
+			<option value="tinyint">tinyint</option>
+			<option value="smallint">smallint</option>
+			<option value="int">int</option>
+			<option value="bigint">bigint</option>
+			<option value="boolean">boolean</option>
+			<option value="float">float</option>
+			<option value="double">double</option>
+			<option value="timestamp">timestamp</option>
+			</select>
 
                             <span class="help-inline">
                             Map 键的类型。
@@ -844,16 +862,16 @@
                         
 
             <select name="columns-0-map_value_type" id="id_columns-0-map_value_type">
-<option value="string">string</option>
-<option value="tinyint">tinyint</option>
-<option value="smallint">smallint</option>
-<option value="int">int</option>
-<option value="bigint">bigint</option>
-<option value="boolean">boolean</option>
-<option value="float">float</option>
-<option value="double">double</option>
-<option value="timestamp">timestamp</option>
-</select>
+			<option value="string">string</option>
+			<option value="tinyint">tinyint</option>
+			<option value="smallint">smallint</option>
+			<option value="int">int</option>
+			<option value="bigint">bigint</option>
+			<option value="boolean">boolean</option>
+			<option value="float">float</option>
+			<option value="double">double</option>
+			<option value="timestamp">timestamp</option>
+			</select>
 
                             <span class="help-inline">
                             Map 值的类型。
@@ -890,6 +908,7 @@
           <button type="button" id="backBtn" class="btn hide">返回</button>
           <button type="button" id="nextBtn" class="btn btn-primary">下一页</button>
 		  <button type="button" id="begin" class="btn btn-primary hide" data-bind="click:begin">开始</button>
+		  <button type="button" id="stop" class="btn btn-primary hide" data-bind="click:stop">停止</button>
       </div>
       </form>
 	  <div class="container hide">
@@ -907,7 +926,7 @@
             <td data-bind="text: viewModel.processPercentage"></th>
 			</tobody>
         </table>
-      <div class="progress progress-info progress-striped" style="margin-bottom: 9px;">
+      <div class="progress progress-info progress-striped" style="margin-bottom: 9px;" data-bind="css: {'bar-success': viewModel.status == 'SUCCEEDED', 'bar-warning': viewModel.status == 'RUNNING' || viewModel.status == 'PREP', 'bar-danger': status != 'RUNNING' && status != 'SUCCEEDED' && status != 'OK' && status != 'PREP' && status != 'SUSPENDED'}, attr: {'style': 'width:' + viewModel.progressPercent}">
         <div class="bar" style="width: 0%"></div>
       </div>
     </div>
@@ -1615,8 +1634,10 @@ $.jHueTour({
   viewModel = new RdbmsViewModel();
   viewModel.fetchServers();
   viewModel.fetchHiveDatabases();
-   ko.applyBindings(viewModel);
+  ko.applyBindings(viewModel);
 function begin(){
+	$('#begin').attr('disabled',"true");
+	$("#stop").css("visibility", "visible").show();
 	startProcess();
 	$('.container').removeClass('hide');
 	var data={
@@ -1633,53 +1654,77 @@ function begin(){
 	  jsonpcallback:'skycallback',
       type: 'GET',
       success: function(data) {
-	  alert(data);
+	  viewModel.jobId(data.logid);
       },
       data: data
     };
     $.ajax(request);
   };
+ function stop(){
+	$('#stop').attr('disabled',"true");
+	$('#begin').removeAttr("disabled");
+	var data={
+		rdbdatabase:$('#rdbdatabase').val(),
+		rdbtable:$('#rdbtable').val(),
+		hivedatabase:$('#hivedatabase').val(),
+		hivetable:$('#hivetable').val(),
+		data_dir:$('#data_dir').val()
+	}
+    var request = {
+      url: 'http://10.60.1.149:4567/etl/killjob/'+viewModel.jobId()+'?userid=1',
+      dataType: 'jsonp',
+	  jsonp:'jsonpcallback',
+	  jsonpcallback:'skycallback',
+      type: 'GET',
+      success: function(data) {
+			window.clearInterval(progressInterval);
+			viewModel.processStatus('FAILED');
+			viewModel.processName('RDB->Hive');
+			$('.bar').css('width',viewModel.processPercentage());	
+			$(document).trigger('server.error', data.message);
+      },
+      data: data
+    };
+    $.ajax(request);
+  }; 
+  
     function startProcess() {
 		progressInterval = window.setInterval(function () {
 		var request = {
-		  url: 'http://10.60.1.149:4567/etl/jobprocess/1',
+		  url: 'http://10.60.1.149:4567/etl/jobprocess/'+viewModel.jobId()+'?userid=1',
 		  dataType:'jsonp',
 		  jsonp:'jsonpcallback',
 		  jsonpcallback:'skycallback',
 		  type: 'GET',
 		  success: function(data) {
 			if (data.status === 0) {
-			 $('.bar').css('width',0);
-			 viewModel.processStatus('...');
+				viewModel.processStatus('PREP');
+				viewModel.processPercentage('0%');
+			    $('.bar').css('width',0);
 			} else if (data.status === 1){
-			viewModel.processStatus('Running');
-			viewModel.processName('Map');
+			viewModel.processStatus('RUNNING');
+			viewModel.processName('RDB->Hive:Map');
 			viewModel.processPercentage(data.process+'%');
-				$('.bar').css('width',data.process+'%');			
+			$('.bar').css('width',viewModel.processPercentage());			
 			} else if (data.status === 2){
 			viewModel.processStatus('Running');
-			viewModel.processName('Reduce');
+			viewModel.status('RUNNING');
+			viewModel.processName('RDB->Hive:Reduce');
 			viewModel.processPercentage(data.process+'%');
-			  $('.bar').css('width',data.process+'%');		  
+			$('.bar').css('width',viewModel.processPercentage());			  
 			} else if (data.status === 3){
-						viewModel.processStatus('Success');
-			viewModel.processName('Total');
+			viewModel.processStatus('Success');
+			viewModel.processName('RDB->Hive');
 			viewModel.processPercentage('100%');
+			$('.bar').css('width',viewModel.processPercentage());	
 			window.clearInterval(progressInterval);	
 			 $.jHueNotify.info("导出成功！");
-			 $('.bar').css('width','100%');	
-			 $('.progress').removeClass('progress-info');
-			 $('.progress').addClass('progress-success');
-			 //$('.container').hide();		 
 			} else{
-			  window.clearInterval(progressInterval);
-			  			viewModel.processStatus('Failed');
-			viewModel.processName('Total');
-			viewModel.processPercentage('100%');
-			  $.jHueNotify.info("导出失败");
-			   $('.progress-info').css('width','100%');	
-			$('.progress').removeClass('progress-info');
-			 $('.progress').addClass('progress-warning');
+			window.clearInterval(progressInterval);
+			viewModel.processStatus('FAILED');
+			viewModel.processName('RDB->Hive');
+			$('.bar').css('width',viewModel.processPercentage());	
+			$(document).trigger('server.error', data.message);
 			}
 		  },
 		};

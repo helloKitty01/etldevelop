@@ -17,6 +17,11 @@
 
 function RdbmsViewModel() {
   var self = this;
+  
+  self.status=ko.observable("common");
+  self.appName=ko.observable("");
+  self.progressPercent=ko.observable("");
+  self.jobId=ko.observable("");
 
   self.servers = ko.observableArray();
   self.hiveDatabases = ko.observableArray();
@@ -24,9 +29,9 @@ function RdbmsViewModel() {
   self.databases = ko.observableArray();
   self.selectedDatabase = ko.observable(0);
   self.hiveTableName=ko.observable("");
-  self.processName=ko.observable("Map");
-  self.processStatus=ko.observable("...");
-  self.processPercentage=ko.observable("0");
+  self.processName=ko.observable("RDB->Hive");
+  self.processStatus=ko.observable("PREP");
+  self.processPercentage=ko.observable("0%");
   self.ddl=ko.mapping.fromJS({
 	'server':-1,
 	'tableName':null,
@@ -273,7 +278,7 @@ function RdbmsViewModel() {
       type: 'GET',
       success: function(data) {
         self.updateServers(data.servers);
-        self.fetchDatabases();
+        //self.fetchDatabases();
       },
       error: error_fn
     };
