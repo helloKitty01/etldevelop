@@ -22,6 +22,11 @@ function RdbmsViewModel() {
   self.appName=ko.observable("");
   self.progressPercent=ko.observable("");
   self.jobId=ko.observable("");
+  self.from =ko.observableArray(['Traditional RDB','Local File System', 'Hive', 'Hbase']);
+  self.fromSelected =ko.observableArray();
+  self.to=ko.observableArray(['Hive', 'HDFS', 'Hbase', 'Local File System']);
+  self.toSelected=ko.observableArray();
+  
 
   self.servers = ko.observableArray();
   self.hiveDatabases = ko.observableArray();
