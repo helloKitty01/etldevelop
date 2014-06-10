@@ -413,16 +413,7 @@
 <div class="row-fluid">
 <div class="span3">
     <div class="sidebar-nav">
-        <ul class="nav nav-list">
-            <li class="nav-header">操作</li>
-            <li><a href="/etltool/rdb_hdfs"><i class="fa fa-wrench"></i> Traditional RDB ==> HDFS</a></li>
-            <li><a href="/etltool/rdb_hive"><i class="fa fa-wrench"></i> Traditional RDB ==> Hive</a></li>
-			<li><a href="/filebrowser"><i class="fa fa-wrench"></i> Local File System <==> HDFS</a></li>
-			<li><a href="#"><i class="fa fa-wrench"></i> Hive ==> Traditional</a></li>
-			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HDFS</a></li>
-			<li><a href="#"><i class="fa fa-wrench"></i> Local File System ==> HBase</a></li>
-			<li><a href="#"><i class="fa fa-wrench"></i> HBase ==> Local File System</a></li>
-        </ul>
+
 		
         <ul class="nav nav-list">
 		<form action="/etltool/rdb_hive" id="db_form" method="POST" style="margin-bottom: 0">
@@ -430,7 +421,6 @@
 		  <li><select name="from" id="id_from" data-bind="options: viewModel.from,selectedOptions: viewModel.fromSelected"></select></li>
           <li class="nav-header">TO</li>
 		  <li><select name="to" id="id_to" data-bind="options: viewModel.to,selectedOptions: viewModel.toSelected"></select></li>
-		  <li><button type="button" id="start" class="btn btn-primary" onclick="beforETL()">进入ETL配置界面</button></li>	
         </form>		  
         </ul>
 
@@ -495,7 +485,7 @@
 			<div class="control-group">                        
 				<label for="table-field_terminator" class="control-label">Hive数据库</label>
 				<div class="controls">
-					<select name="table-field_terminator_0" id="hivedatabase" data-bind="options: viewModel.hiveDatabases">
+					<select name="table-field_terminator_0" id="rdb_hive_hivedatabase" data-bind="options: viewModel.hiveDatabases">
 					</select>
 					<span class="help-block">
 						对应字段的解释
@@ -506,7 +496,7 @@
 			<div class="control-group">
 				<label for="table-name" class="control-label">Hive表名</label>
 				<div class="controls">
-				<input data-bind="value: $root.hiveTableName" name="table-name" id="hivetable"  type='text'   class=""  />
+				<input data-bind="value: $root.hiveTableName" name="table-name" id="rdb_hive_hivetable"  type='text'   class=""  />
 					<p class="help-block">
 					默认为RDB相应表名
 					</p>
@@ -537,8 +527,8 @@
             <td data-bind="text: viewModel.processPercentage"></th>
 			</tobody>
         </table>
-      <div class="progress progress-info progress-striped" style="margin-bottom: 9px;" data-bind="css: {'bar-success': viewModel.status == 'SUCCEEDED', 'bar-warning': viewModel.status == 'RUNNING' || viewModel.status == 'PREP', 'bar-danger': status != 'RUNNING' && status != 'SUCCEEDED' && status != 'OK' && status != 'PREP' && status != 'SUSPENDED'}, attr: {'style': 'width:' + viewModel.progressPercent}">
-        <div class="bar" style="width: 0%"></div>
+      <div class="progress  progress-striped rdb_hive_progress" style="margin-bottom: 9px;" data-bind="css: {'progress-success': viewModel.processStatus == 'SUCCEEDED', 'progress-info': viewModel.processStatus == 'RUNNING' || viewModel.processStatus == 'PREP', 'progress-danger': viewModel.processStatus == 'KILLED'||viewModel.processStatus == 'FAILED'}, attr: {'style': 'width:' + viewModel.progressPercent}">
+        <div class="bar rdb_hive_bar" style="width: 0%"></div>
       </div>
     </div>
       </p>
@@ -549,7 +539,7 @@
 
 
 
-<div class="span9  rdb_hdfs ">
+<div class="span9  rdb_hdfs hide">
   <div class="card card-small" style="margin-top: 0">
     <h1 class="card-heading simple">
       <ul id="breadcrumbs" class="nav nav-pills hueBreadcrumbBar">
@@ -668,6 +658,22 @@
 
 
 
+<div class="span9  other hide">
+  <div class="card card-small" style="margin-top: 0">
+    <h1 class="card-heading simple">
+      <ul id="breadcrumbs" class="nav nav-pills hueBreadcrumbBar">
+        <li>
+          <a href="/metastore/databases">ETL工具</a><span class="divider">&gt;</span>
+        </li>
+        <li>
+          <a href="/metastore/tables/default">当前不支持！！！！！！！！！！！！</a>
+        </li>
+      </ul>
+    </h1>
+</div>
+</div>
+
+
 
 
 </div>
@@ -717,8 +723,6 @@
   }
 
   .steps {
-    min-height: 350px;
-    margin-top: 10px;
   }
 
   div .alert {
@@ -733,7 +737,6 @@ $(document).ready(function () {
   $("#chooseDatabase").on("change", function () {
     window.location.href = $(this).val();
   });
-
   if ($(".removeBtn").length == 1) {
     $(".removeBtn").first().hide();
   }
@@ -996,11 +999,10 @@ function rdb_hive_begin(){
 	startProcess();
 	$('.container').removeClass('hide');
 	var data={
-		rdbdatabase:$('#rdbdatabase').val(),
-		rdbtable:$('#rdbtable').val(),
-		hivedatabase:$('#hivedatabase').val(),
-		hivetable:$('#hivetable').val(),
-		data_dir:$('#data_dir').val()
+		rdbdatabase:$('#rdb_hive_rdbdatabase').val(),
+		rdbtable:$('#rdb_hive_rdbtable').val(),
+		hivedatabase:$('#rdb_hive_hivedatabase').val(),
+		hivetable:$('#rdb_hive_hivetable').val()
 	}
     var request = {
       url: 'http://10.60.1.149:4567/etl/rdbtohive?userid=1',
@@ -1016,19 +1018,30 @@ function rdb_hive_begin(){
     $.ajax(request);
   };
   
-	function beforETL(){
+	function beforeETL(){
 		$.totalStorage('selectedFrom', viewModel.fromSelected());
 		$.totalStorage('selectedTo', viewModel.toSelected());
+		$('.span9').addClass('hide');
+		if(viewModel.fromSelected()=='Traditional RDB'){
+			if(viewModel.toSelected()=='Hive'){
+				$('.rdb_hive').removeClass('hide');
+				$("ul.rdb_hive_ul li.active").find("a").click();
+			}else {
+				if(viewModel.toSelected()=='HDFS'){$('.rdb_hdfs').removeClass('hide');$("ul.rdb_hdfs_ul li.active").find("a").click();}else{$('.other').removeClass('hide');}
+			}
+		}else{
+			$('.other').removeClass('hide');
+		}
+		
 	}
  function rdb_hive_stop(){
-	$('#rdb_hive_stop').attr('disabled',"true");
+	$('#rdb_hive_stop').hide();
 	$('#rdb_hive_begin').removeAttr("disabled");
 	var data={
-		rdbdatabase:$('#rdbdatabase').val(),
-		rdbtable:$('#rdbtable').val(),
-		hivedatabase:$('#hivedatabase').val(),
-		hivetable:$('#hivetable').val(),
-		data_dir:$('#data_dir').val()
+		rdbdatabase:$('#rdb_hive_rdbdatabase').val(),
+		rdbtable:$('#rdb_hive_rdbtable').val(),
+		hivedatabase:$('#rdb_hive_hivedatabase').val(),
+		hivetable:$('#rdb_hive_hivetable').val()
 	}
     var request = {
       url: 'http://10.60.1.149:4567/etl/killjob/'+viewModel.jobId()+'?userid=1',
@@ -1038,10 +1051,15 @@ function rdb_hive_begin(){
       type: 'GET',
       success: function(data) {
 			window.clearInterval(progressInterval);
-			viewModel.processStatus('FAILED');
+			viewModel.processStatus('KILLED');
 			viewModel.processName('RDB->Hive');
-			$('.bar').css('width',viewModel.processPercentage());	
-			$(document).trigger('server.error', data.message);
+			viewModel.processPercentage('100%');
+			$('.rdb_hive_bar').css('width','100%');
+			$.jHueNotify.info("成功停止当前ETL任务！");
+			$('.rdb_hive_progress').removeClass('progress-info');
+			$('.rdb_hive_progress').removeClass('progress-success');
+			$('.rdb_hive_progress').addClass('progress-danger');
+			//$(document).trigger('server.error', data.message);
       },
       data: data
     };
@@ -1060,30 +1078,42 @@ function rdb_hive_begin(){
 			if (data.status === 0) {
 				viewModel.processStatus('PREP');
 				viewModel.processPercentage('0%');
-			    $('.bar').css('width',0);
+			    $('.rdb_hive_bar').css('width',0);
 			} else if (data.status === 1){
 			viewModel.processStatus('RUNNING');
 			viewModel.processName('RDB->Hive:Map');
 			viewModel.processPercentage(data.process+'%');
-			$('.bar').css('width',viewModel.processPercentage());			
+			$('.rdb_hive_progress').removeClass('progress-success');
+			$('.rdb_hive_progress').removeClass('progress-danger');
+			$('.rdb_hive_progress').addClass('progress-info');
+			$('.rdb_hive_bar').css('width',viewModel.processPercentage());			
 			} else if (data.status === 2){
-			viewModel.processStatus('Running');
-			viewModel.status('RUNNING');
+			viewModel.processStatus('RUNNING');
 			viewModel.processName('RDB->Hive:Reduce');
 			viewModel.processPercentage(data.process+'%');
-			$('.bar').css('width',viewModel.processPercentage());			  
+			$('.rdb_hive_bar').css('width',viewModel.processPercentage());
+			$('.rdb_hive_progress').removeClass('progress-success');
+			$('.rdb_hive_progress').removeClass('progress-danger');
+			$('.rdb_hive_progress').addClass('progress-info');			
 			} else if (data.status === 3){
-			viewModel.processStatus('Success');
+			viewModel.processStatus('SUCCEEDED');
 			viewModel.processName('RDB->Hive');
 			viewModel.processPercentage('100%');
-			$('.bar').css('width',viewModel.processPercentage());	
+			$('.rdb_hive_bar').css('width',viewModel.processPercentage());	
 			window.clearInterval(progressInterval);	
 			 $.jHueNotify.info("导出成功！");
+			$('.rdb_hive_progress').removeClass('progress-info');
+			$('.rdb_hive_progress').removeClass('progress-danger');
+			$('.rdb_hive_progress').addClass('progress-success');
 			} else{
 			window.clearInterval(progressInterval);
 			viewModel.processStatus('FAILED');
 			viewModel.processName('RDB->Hive');
-			$('.bar').css('width',viewModel.processPercentage());	
+			viewModel.processPercentage('100%');
+			$('.rdb_hive_progress').removeClass('progress-info');
+			$('.rdb_hive_progress').removeClass('progress-success');
+			$('.rdb_hive_progress').addClass('progress-danger');
+			$('.rdb_hive_bar').css('width',viewModel.processPercentage());	
 			$(document).trigger('server.error', data.message);
 			}
 		  },
@@ -1105,10 +1135,33 @@ function rdb_hive_begin(){
 	$("#id_to").change(function () {
 	var name=$(this).val();
 	$.totalStorage('selectedTo', name);
+			$('.span9').addClass('hide');
+		if(viewModel.fromSelected()=='Traditional RDB'){
+			if(viewModel.toSelected()=='Hive'){
+				$('.rdb_hive').removeClass('hide');
+				$("ul.rdb_hive_ul li.active").find("a").click();
+			}else {
+				if(viewModel.toSelected()=='HDFS'){$('.rdb_hdfs').removeClass('hide');$("ul.rdb_hdfs_ul li.active").find("a").click();}else{$('.other').removeClass('hide');}
+			}
+		}else{
+			$('.other').removeClass('hide');
+		}
+	
     });
 	$("#id_from").change(function () {
 	var name=$(this).val();
 	$.totalStorage('selectedFrom', name);
+			$('.span9').addClass('hide');
+		if(viewModel.fromSelected()=='Traditional RDB'){
+			if(viewModel.toSelected()=='Hive'){
+				$('.rdb_hive').removeClass('hide');
+				$("ul.rdb_hive_ul li.active").find("a").click();
+			}else {
+				if(viewModel.toSelected()=='HDFS'){$('.rdb_hdfs').removeClass('hide');$("ul.rdb_hdfs_ul li.active").find("a").click();}else{$('.other').removeClass('hide');}
+			}
+		}else{
+			$('.other').removeClass('hide');
+		}
     });
     $("#rdb_hive_rdbtable").change(function () {
 		viewModel.hiveTableName($(this).val());

@@ -24,18 +24,98 @@ function RdbmsViewModel() {
   self.jobId=ko.observable("");
   self.from =ko.observableArray(['Traditional RDB','Local File System', 'Hive', 'Hbase']);
   self.fromSelected =ko.observableArray();
-  self.to=ko.observableArray(['Hive', 'HDFS', 'Hbase', 'Local File System']);
+  self.to=ko.observableArray(['Hive', 'HDFS', 'Hbase', 'Local File System','Traditional RDB']);
   self.toSelected=ko.observableArray();
+  self.context_progress=ko.observable("_progress");
+  self.context_bar=ko.observable("_bar");
+  self.prefix=ko.observable("rdb_hive");
+  self.etls=ko.observableArray();
+
+  self.etlinit=function() {
+	var newEtls = [];
+	newEtls.push({
+		'prefix':'rdb_hive',
+		'processName':"RDB->Hive",
+		'processStatus':"PREPARE",
+		'processPercentage': "0%",
+		'jobId': "",
+	},{
+		'prefix':'rdb_hdfs',
+		'processName':"RDB->HDFS",
+		'processStatus':"PREPARE",
+		'processPercentage': "0%",
+		'jobId': "",
+	},{
+		'prefix':'hive_rdb',
+		'processName':"Hive->RDB",
+		'processStatus':"PREPARE",
+		'processPercentage': "0%",
+		'jobId': "",
+	},{
+		'prefix':'rdb_hbase',
+		'processName':"RDB->Hbase",
+		'processStatus':"PREPARE",
+		'processPercentage': "0%",
+		'jobId': "",
+	});
+	self.etls(newEtls);
+  };
+  self.updateStatus=function(status){
+	$.each(self.etls(), function(index, etl) {
+    if (etl.prefix == self.prefix()) {
+		if(status){
+			etl.processStatus=status;
+			self.processStatus(status);
+		}else{self.processStatus(etl.processStatus)}
+    }
+    });
+  };
+  self.updateJobId=function(jobId){
+	$.each(self.etls(), function(index, etl) {
+    if (etl.prefix == self.prefix()) {
+		if(jobId){
+			etl.jobId=jobId;
+			self.jobId(jobId);
+		}else{self.jobId(etl.jobId)}
+    }
+    });
+  };
+  self.updatePercentage=function(percentage){
+	$.each(self.etls(), function(index, etl) {
+    if (etl.prefix == self.prefix()) {
+		if(percentage){
+			etl.processPercentage=percentage;
+			self.processPercentage(percentage);
+		}else{self.processPercentage(etl.processPercentage);}
+    }
+    });
+  };
+  self.updateName=function(name){
+	$.each(self.etls(), function(index, etl) {
+    if (etl.prefix == self.prefix()) {
+		if(name){
+			etl.processName=name;
+			self.processName(name);
+		}else{self.processName(etl.processName)}
+    }
+    });
+  };
   
+  self.processName = ko.observable("RDB->Hive");
+	
+  self.processPercentage = ko.observable("0%");
+
+  self.processStatus = ko.observable("PREPARE");
 
   self.servers = ko.observableArray();
+  self.rowkey_columns=ko.observableArray();
   self.hiveDatabases = ko.observableArray();
   self.selectedServer = ko.observable(0);
   self.databases = ko.observableArray();
   self.selectedDatabase = ko.observable(0);
   self.hiveTableName=ko.observable("");
   self.processName=ko.observable("RDB->Hive");
-  self.processStatus=ko.observable("PREP");
+  self.processStatus=ko.observable("PREPARE");
   self.processPercentage=ko.observable("0%");
   self.ddl=ko.mapping.fromJS({
 	'server':-1,
@@ -412,6 +492,19 @@ function RdbmsViewModel() {
       };
       $.ajax(request);
     }
+  };
+  self.fetchColumns = function(table,database) {
+      var request = {
+        url: 'http://10.60.1.149:4567/datasources/'+database+'/'+table+'/column?userid=1',
+		dataType:'jsonp',
+		jsonp:'callback',
+        type: 'GET',
+        success: function(data) {
+			self.rowkey_columns(data.columns);
+        },
+        error: error_fn
+      };
+      $.ajax(request);
   };
 
   self.fetchProcess = function() {
