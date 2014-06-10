@@ -22,9 +22,9 @@ function RdbmsViewModel() {
   self.appName=ko.observable("");
   self.progressPercent=ko.observable("");
   self.jobId=ko.observable("");
-  self.from =ko.observableArray(['Traditional RDB','Local File System', 'Hive', 'Hbase']);
+  self.from =ko.observableArray(['Traditional RDB','Local File System', 'Hive','HDFS','ICTBase']);
   self.fromSelected =ko.observableArray();
-  self.to=ko.observableArray(['Hive', 'HDFS', 'Hbase', 'Local File System','Traditional RDB']);
+  self.to=ko.observableArray(['Hive', 'HDFS', 'Local File System','Traditional RDB','ICTBase']);
   self.toSelected=ko.observableArray();
   self.context_progress=ko.observable("_progress");
   self.context_bar=ko.observable("_bar");
@@ -52,8 +52,8 @@ function RdbmsViewModel() {
 		'processPercentage': "0%",
 		'jobId': "",
 	},{
-		'prefix':'rdb_hbase',
-		'processName':"RDB->Hbase",
+		'prefix':'rdb_ict',
+		'processName':"RDB->ICTBase",
 		'processStatus':"PREPARE",
 		'processPercentage': "0%",
 		'jobId': "",

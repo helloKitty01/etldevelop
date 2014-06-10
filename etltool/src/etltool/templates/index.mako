@@ -656,6 +656,121 @@
 </div>
 
 
+<div class="span9  hdfs_ict hide">
+  <div class="card card-small" style="margin-top: 0">
+    <h1 class="card-heading simple">
+      <ul id="breadcrumbs" class="nav nav-pills hueBreadcrumbBar">
+        <li>
+          <a href="/metastore/databases">ETL工具</a><span class="divider">&gt;</span>
+        </li>
+        <li>
+          <a href="/metastore/tables/default">HDFS ==> ICTBase</a>
+        </li>
+      </ul>
+    </h1>
+    <div class="card-body">
+      <p>
+        <ul class="nav nav-pills hdfs_ict_ul">
+          <li class="active"><a href="#hdfs_ict_step0" class="hdfs_ict_step">第 1 步：HDFS配置</a></li>		  
+          <li><a href="#hdfs_ict_step1" class="hdfs_ict_step">第 2 步：ICTBase配置</a></li>
+        </ul>
+
+        <form action="#" method="POST" id="mainForm" class="form-horizontal">
+      <div class="steps">
+        <div id="hdfs_ict_step0" class="stepDetails">
+            <fieldset>
+                <div class="alert alert-info"><h3>HDFS相关配置</h3>包含文件所在的HDFS目录</div>
+				<div id="location" class="control-group">
+				<label for="table-external_location" class="control-label">External location</label>
+				<div class="controls">
+					<input name="table-external_location" value="" type='text' id='hdfs_ict_hivedir'  class="pathChooser input-xxlarge" placeholder="/user/user_name/data_dir" /><a class="btn fileChooserBtn" href="#" data-filechooser-destination="table-external_location">...</a>
+					<span class="help-block">
+							导入文件所在目录
+					</span>
+				</div>
+                </div>	
+				
+				<div class="control-group">
+										
+					<label for="delimiter" class="control-label">分隔符</label>
+							<div class="controls">
+							 <select name="delimiter_0" id="hdfs_ict_delimiter">
+							<option value="\001" selected="selected">'^A' (\001)</option>
+							<option value="\002">'^B' (\002)</option>
+							<option value="\003">'^C' (\003)</option>
+							<option value="\t">Tab (\t)</option>
+							<option value=",">Comma (,)</option>
+							<option value=" ">Space</option>
+							<option value="__other__">Other...</option>
+							</select><input placeholder="Type your delimiter here" style="margin-left: 4px; display: none;" name="delimiter_1" id="id_delimiter_1" type="text">
+							<span class="help-block">
+								对应字段的解释
+							</span>
+							</div>
+				</div>
+
+            </fieldset>
+     </div>
+	  
+        <div id="hdfs_ict_step1" class="stepDetails hide">
+            <fieldset>
+                <div class="alert alert-info"><h3>ICTBase相关配置</h3>包含新建的（ICTBase表名），ICTBase的（column family名），以及指定RDB表中的某一列作为ICTBase表的（rowkey）</div>
+				<div class="control-group">                        
+					<label for="table-field_terminator" class="control-label">ICTBase表名</label>
+					<div class="controls">
+						<input   id="hdfs_ict_tablename"  type='text'   class=""  />
+						</select>
+						<span class="help-block">
+							对应字段的解释
+						</span>
+					</div>
+				</div>			
+
+				<div class="control-group">
+					<label for="table-name" class="control-label">ICTBase Column Family</label>
+					<div class="controls">
+					<input   id="hdfs_ict_columnfamily"  type='text'   class=""  />
+						<p class="help-block">
+						默认为RDB相应表名
+						</p>
+					</div>
+				</div>				
+            </fieldset>
+        </div>
+      </div>
+      <div class="form-actions" style="padding-left: 10px">
+          <button type="button" id="hdfs_ict_backBtn" class="btn hide">返回</button>
+          <button type="button" id="hdfs_ict_nextBtn" class="btn btn-primary">下一页</button>
+		  <button type="button" id="hdfs_ict_begin" class="btn btn-primary hide" data-bind="click:begin">开始</button>
+		  <button type="button" id="hdfs_ict_stop" class="btn btn-primary hide" data-bind="click:stop">停止</button>
+      </div>
+      </form>
+	  <div class="container hide hdfs_ict_container">
+	    <table class="table table-striped table-condensed datatables tablescroller-disable">
+          <thead>
+          <tr>
+            <th width="20%">Name</th>
+			<th width="20%">JobId</th>
+            <th width="40%">Status</th>
+            <th>Percentage</th>
+          </tr>
+          </thead>
+		  <tbody>
+            <td width="20%" ><span class="label label-info" data-bind="text: viewModel.processName"></span></td>
+			<td width="20%" ><span class="label label-info" data-bind="text: viewModel.jobId"></span></td>
+            <td width="40%" data-bind="text: viewModel.processStatus"></td>
+            <td ><span class="label label-info" data-bind="text: viewModel.processPercentage"></span></td>
+			</tbody>
+        </table>
+      <div class="progress  progress-striped hdfs_ict_progress" style="margin-bottom: 9px;" data-bind="css: {'progress-success': viewModel.updateStatus == 'SUCCEEDED', 'progress-info': viewModel.updateStatus == 'RUNNING' || viewModel.updateStatus == 'PREPARE', 'progress-danger': viewModel.updateStatus == 'KILLED'||viewModel.updateStatus == 'FAILED'}">
+        <div class="bar hdfs_ict_bar" style="width: 0%"></div>
+      </div>
+    </div>
+      </p>
+    </div>
+</div>
+</div>
+
 
 <div class="span9  rdb_hdfs hide">
   <div class="card card-small" style="margin-top: 0">
@@ -777,7 +892,7 @@
 </div>
 
 
-<div class="span9  rdb_hbase hide">
+<div class="span9  rdb_ict hide">
   <div class="card card-small" style="margin-top: 0">
     <h1 class="card-heading simple">
       <ul id="breadcrumbs" class="nav nav-pills hueBreadcrumbBar">
@@ -785,28 +900,28 @@
           <a href="/metastore/databases">ETL工具</a><span class="divider">&gt;</span>
         </li>
         <li>
-          <a href="/metastore/tables/default">Traditional RDB ==> HBase</a>
+          <a href="/metastore/tables/default">Traditional RDB ==> ICTBase</a>
         </li>
       </ul>
     </h1>
     <div class="card-body">
       <p>
-        <ul class="nav nav-pills rdb_hbase_ul">
-          <li class="active"><a href="#rdb_hbase_step0" class="rdb_hbase_step">第 1 步：RDB配置</a></li>		  
-          <li><a href="#rdb_hbase_step1" class="rdb_hbase_step">第 2 步：Hbase配置</a></li>
+        <ul class="nav nav-pills rdb_ict_ul">
+          <li class="active"><a href="#rdb_ict_step0" class="rdb_ict_step">第 1 步：RDB配置</a></li>		  
+          <li><a href="#rdb_ict_step1" class="rdb_ict_step">第 2 步：ICTBase配置</a></li>
         </ul>
 
         <form action="#" method="POST" id="mainForm" class="form-horizontal">
       <div class="steps">
 
-        <div id="rdb_hbase_step0" class="stepDetails">
+        <div id="rdb_ict_step0" class="stepDetails">
             <fieldset>
                 <div class="alert alert-info"><h3>RDB相关配置</h3>包含RDB数据源和表</div>
 				
 			<div class="control-group">                        
 				<label for="table-field_terminator" class="control-label">RDB数据源</label>
 				<div class="controls">
-					<select name="table-field_terminator_0" id="rdb_hbase_rdbdatabase" data-bind="options: viewModel.servers,optionsText: 'nice_name',optionsValue: 'name'">
+					<select name="table-field_terminator_0" id="rdb_ict_rdbdatabase" data-bind="options: viewModel.servers,optionsText: 'nice_name',optionsValue: 'name'">
 					</select>
 					<span class="help-block">
 						对应字段的解释
@@ -817,7 +932,7 @@
 			<div class="control-group">                        
 				<label for="table-field_terminator" class="control-label">RDB数据表</label>
 				<div class="controls">
-					<select name="table-field_terminator_0" id="rdb_hbase_rdbtable" data-bind="options: viewModel.databases">
+					<select name="table-field_terminator_0" id="rdb_ict_rdbtable" data-bind="options: viewModel.databases">
 					</select>
 					<span class="help-block">
 						对应字段的解释
@@ -827,7 +942,7 @@
 			<div class="control-group">                        
 				<label for="table-field_terminator" class="control-label">指定的rowkey</label>
 				<div class="controls">
-					<select name="table-field_terminator_0" id="rdb_hbase_rowkey" data-bind="options: viewModel.rowkey_columns">
+					<select name="table-field_terminator_0" id="rdb_ict_rowkey" data-bind="options: viewModel.rowkey_columns">
 					</select>
 					<span class="help-block">
 						对应字段的解释
@@ -837,13 +952,13 @@
             </fieldset>
      </div>
 	  
-        <div id="rdb_hbase_step1" class="stepDetails hide">
+        <div id="rdb_ict_step1" class="stepDetails hide">
             <fieldset>
-                <div class="alert alert-info"><h3>Hbase相关配置</h3>包含新建的（hbase表名），hbase的（column family名），以及指定RDB表中的某一列作为hbase表的（rowkey）</div>
+                <div class="alert alert-info"><h3>ICTBase相关配置</h3>包含新建的（ICTBase表名），ICTBase的（column family名），以及指定RDB表中的某一列作为ICTBase表的（rowkey）</div>
 			<div class="control-group">                        
-				<label for="table-field_terminator" class="control-label">Hbase表名</label>
+				<label for="table-field_terminator" class="control-label">ICTBase表名</label>
 				<div class="controls">
-					<input   id="rdb_hbase_tablename"  type='text'   class=""  />
+					<input   id="rdb_ict_tablename"  type='text'   class=""  />
 					</select>
 					<span class="help-block">
 						对应字段的解释
@@ -852,9 +967,9 @@
 			</div>			
 
 			<div class="control-group">
-				<label for="table-name" class="control-label">Hbase Column Family</label>
+				<label for="table-name" class="control-label">ICTBase Column Family</label>
 				<div class="controls">
-				<input   id="rdb_hbase_columnfamily"  type='text'   class=""  />
+				<input   id="rdb_ict_columnfamily"  type='text'   class=""  />
 					<p class="help-block">
 					默认为RDB相应表名
 					</p>
@@ -864,13 +979,13 @@
         </div>
       </div>
       <div class="form-actions" style="padding-left: 10px">
-          <button type="button" id="rdb_hbase_backBtn" class="btn hide">返回</button>
-          <button type="button" id="rdb_hbase_nextBtn" class="btn btn-primary">下一页</button>
-		  <button type="button" id="rdb_hbase_begin" class="btn btn-primary hide" data-bind="click:begin">开始</button>
-		  <button type="button" id="rdb_hbase_stop" class="btn btn-primary hide" data-bind="click:rdb_hbase_stop">停止</button>
+          <button type="button" id="rdb_ict_backBtn" class="btn hide">返回</button>
+          <button type="button" id="rdb_ict_nextBtn" class="btn btn-primary">下一页</button>
+		  <button type="button" id="rdb_ict_begin" class="btn btn-primary hide" data-bind="click:begin">开始</button>
+		  <button type="button" id="rdb_ict_stop" class="btn btn-primary hide" data-bind="click:rdb_ict_stop">停止</button>
       </div>
       </form>
-	  <div class="container hide rdb_hbase_container">
+	  <div class="container hide rdb_ict_container">
 	    <table class="table table-striped table-condensed datatables tablescroller-disable">
           <thead>
           <tr>
@@ -887,8 +1002,8 @@
             <td ><span class="label label-info" data-bind="text: viewModel.processPercentage"></span></td>
 			</tbody>
         </table>
-      <div class="progress  progress-striped rdb_hbase_progress" style="margin-bottom: 9px;" data-bind="css: {'progress-success': viewModel.updateStatus == 'SUCCEEDED', 'progress-info': viewModel.updateStatus == 'RUNNING' || viewModel.updateStatus == 'PREPARE', 'progress-danger': viewModel.updateStatus == 'KILLED'||viewModel.updateStatus == 'FAILED'}">
-        <div class="bar rdb_hbase_bar" style="width: 0%"></div>
+      <div class="progress  progress-striped rdb_ict_progress" style="margin-bottom: 9px;" data-bind="css: {'progress-success': viewModel.updateStatus == 'SUCCEEDED', 'progress-info': viewModel.updateStatus == 'RUNNING' || viewModel.updateStatus == 'PREPARE', 'progress-danger': viewModel.updateStatus == 'KILLED'||viewModel.updateStatus == 'FAILED'}">
+        <div class="bar rdb_ict_bar" style="width: 0%"></div>
       </div>
     </div>
       </p>
@@ -983,6 +1098,10 @@ $(document).ready(function () {
         $("input[name='" + _destination + "']").val(filePath);
         $("#chooseFile").modal("hide");
       },
+	  onFileChoose: function (filePath) {
+         $("input[name='" + _destination + "']").val(filePath);
+         $("#chooseFile").modal("hide");
+      },
       createFolder: false,
       selectFolder: true,
       uploadFile: false
@@ -1055,24 +1174,45 @@ $(document).ready(function () {
       $(this).parent().addClass("active");
     }
   });
-  $(".rdb_hbase_step").click(function (event) {	
+   $(".hdfs_ict_step").click(function (event) {	
     event.preventDefault();
     if (validateForm()) {
       $(".stepDetails").hide();
       var _step = $(this).attr("href");
       $(_step).css("visibility", "visible").show();
       $("#backBtn").hide();
-      if (_step != "#rdb_hbase_step1") {
-        $("#rdb_hbase_nextBtn").css("visibility", "visible").show();
-        $("#rdb_hbase_begin").hide();
-		$("#rdb_hbase_backBtn").hide();	  
+      if (_step != "#hdfs_ict_step1") {
+        $("#hdfs_ict_nextBtn").css("visibility", "visible").show();
+        $("#hdfs_ict_begin").hide();
+		$("#hdfs_ict_backBtn").hide();	  
       }
-      if (_step != "#rdb_hbase_step0") {
-        $("#rdb_hbase_backBtn").css("visibility", "visible").show();
-		$("#rdb_hbase_begin").css("visibility", "visible").show();
-		$("#rdb_hbase_nextBtn").hide();
+      if (_step != "#hdfs_ict_step0") {
+        $("#hdfs_ict_backBtn").css("visibility", "visible").show();
+		$("#hdfs_ict_begin").css("visibility", "visible").show();
+		$("#hdfs_ict_nextBtn").hide();
       }
-      $(".rdb_hbase_step").parent().removeClass("active");
+      $(".hdfs_ict_step").parent().removeClass("active");
+      $(this).parent().addClass("active");
+    }
+  });
+  $(".rdb_ict_step").click(function (event) {	
+    event.preventDefault();
+    if (validateForm()) {
+      $(".stepDetails").hide();
+      var _step = $(this).attr("href");
+      $(_step).css("visibility", "visible").show();
+      $("#backBtn").hide();
+      if (_step != "#rdb_ict_step1") {
+        $("#rdb_ict_nextBtn").css("visibility", "visible").show();
+        $("#rdb_ict_begin").hide();
+		$("#rdb_ict_backBtn").hide();	  
+      }
+      if (_step != "#rdb_ict_step0") {
+        $("#rdb_ict_backBtn").css("visibility", "visible").show();
+		$("#rdb_ict_begin").css("visibility", "visible").show();
+		$("#rdb_ict_nextBtn").hide();
+      }
+      $(".rdb_ict_step").parent().removeClass("active");
       $(this).parent().addClass("active");
     }
   });
@@ -1083,6 +1223,13 @@ $(document).ready(function () {
 
   $("#rdb_hive_backBtn").click(function () {
     $("ul.rdb_hive_ul li.active").prev().find("a").click();
+  });
+  $("#hdfs_ict_nextBtn").click(function () {
+    $("ul.hdfs_ict_ul li.active").next().find("a").click();
+  });
+
+  $("#hdfs_ict_backBtn").click(function () {
+    $("ul.hdfs_ict_ul li.active").prev().find("a").click();
   });
 
   $("#rdb_hdfs_nextBtn").click(function () {
@@ -1101,12 +1248,12 @@ $(document).ready(function () {
     $("ul.hive_rdb_ul li.active").prev().find("a").click();
   });
  
-  $("#rdb_hbase_nextBtn").click(function () {
-    $("ul.rdb_hbase_ul li.active").next().find("a").click();
+  $("#rdb_ict_nextBtn").click(function () {
+    $("ul.rdb_ict_ul li.active").next().find("a").click();
   });
 
-  $("#rdb_hbase_backBtn").click(function () {
-    $("ul.rdb_hbase_ul li.active").prev().find("a").click();
+  $("#rdb_ict_backBtn").click(function () {
+    $("ul.rdb_ict_ul li.active").prev().find("a").click();
   });
   
 
@@ -1279,6 +1426,7 @@ $(document).ready(function () {
   
 
 <script type="text/javascript">
+  progressInterval=-1;
   viewModel = new RdbmsViewModel();
   viewModel.fetchServers();
   viewModel.fetchHiveDatabases();
@@ -1286,7 +1434,7 @@ $(document).ready(function () {
   if($.totalStorage('selectedFrom')){viewModel.fromSelected=ko.observableArray([$.totalStorage('selectedFrom')]);}
   if($.totalStorage('selectedTo')){viewModel.toSelected=ko.observableArray([$.totalStorage('selectedTo')]);}
   ko.applyBindings(viewModel);
-function rdb_hive_begin(){
+	function rdb_hive_begin(){
 	$('#rdb_hive_begin').attr('disabled',"true");
 	$("#rdb_hive_stop").css("visibility", "visible").show();
 	$('.container').removeClass('hide');
@@ -1439,8 +1587,28 @@ function begin(){
     viewModel.fetchDatabases();
 
     });
+    $("#hive_rdb_rdbdatabase").change(function () {
+	var name=$(this).val();
+    $.each(viewModel.servers(), function(index, server) {
+      if (server.name() == name) {
+        viewModel.selectedServer(index);
+      }
+    });
+    $.totalStorage('hueRdbmsLastServer', viewModel.server().name());
+    viewModel.fetchDatabases();
+    });
+    $("#rdb_hdfs_rdbdatabase").change(function () {
+	var name=$(this).val();
+    $.each(viewModel.servers(), function(index, server) {
+      if (server.name() == name) {
+        viewModel.selectedServer(index);
+      }
+    });
+    $.totalStorage('hueRdbmsLastServer', viewModel.server().name());
+    viewModel.fetchDatabases();
+    });
 	
-    $("#rdb_hbase_rdbdatabase").change(function () {
+    $("#rdb_ict_rdbdatabase").change(function () {
 	var name=$(this).val();
     $.each(viewModel.servers(), function(index, server) {
       if (server.name() == name) {
@@ -1450,9 +1618,9 @@ function begin(){
     viewModel.fetchDatabases();
 
     });
-    $("#rdb_hbase_rdbtable").change(function () {
+    $("#rdb_ict_rdbtable").change(function () {
 	var table=$(this).val();
-	var database=$("#rdb_hbase_rdbdatabase").val();
+	var database=$("#rdb_ict_rdbdatabase").val();
     viewModel.fetchColumns(table,database);
     });
 	$("#id_to").change(function () {
@@ -1468,7 +1636,7 @@ function begin(){
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.rdb_hive_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
 		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='HDFS'){
@@ -1479,18 +1647,18 @@ function begin(){
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.rdb_hdfs_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
-		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='Hbase'){
-				$('.rdb_hbase').removeClass('hide');
-				viewModel.prefix('rdb_hbase');
+		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='ICTBase'){
+				$('.rdb_ict').removeClass('hide');
+				viewModel.prefix('rdb_ict');
 				viewModel.updateName();
 				viewModel.updatePercentage();
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.rdb_hbase_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
 		if(viewModel.fromSelected()=='Hive'&&viewModel.toSelected()=='Traditional RDB'){
@@ -1501,7 +1669,29 @@ function begin(){
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.hive_rdb_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
+				return;
+		};
+		if(viewModel.fromSelected()=='HDFS'&&viewModel.toSelected()=='ICTBase'){
+				$('.hdfs_ict').removeClass('hide');
+				viewModel.prefix('hdfs_ict');
+				viewModel.updateName();
+				viewModel.updatePercentage();
+				viewModel.updateStatus();
+				viewModel.updateJobId();
+				if(viewModel.jobId()){startProcess();}
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
+				return;
+		};
+		if(viewModel.fromSelected()=='ICTBase'&&viewModel.toSelected()=='HDFS'){
+				$('.ict_hdfs').removeClass('hide');
+				viewModel.prefix('ict_hdfs');
+				viewModel.updateName();
+				viewModel.updatePercentage();
+				viewModel.updateStatus();
+				viewModel.updateJobId();
+				if(viewModel.jobId()){startProcess();}
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
 		$('.other').removeClass('hide');
@@ -1511,6 +1701,7 @@ function begin(){
 		var name=$(this).val();
 		$.totalStorage('selectedFrom', name);
 		$('.span9').addClass('hide');
+		window.clearInterval(progressInterval);
 		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='Hive'){
 				$('.rdb_hive').removeClass('hide');
 				viewModel.prefix('rdb_hive');
@@ -1519,7 +1710,7 @@ function begin(){
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.rdb_hive_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
 		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='HDFS'){
@@ -1530,18 +1721,18 @@ function begin(){
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.rdb_hdfs_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
-		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='Hbase'){
-				$('.rdb_hbase').removeClass('hide');
-				viewModel.prefix('rdb_hbase');
+		if(viewModel.fromSelected()=='Traditional RDB'&&viewModel.toSelected()=='ICTBase'){
+				$('.rdb_ict').removeClass('hide');
+				viewModel.prefix('rdb_ict');
 				viewModel.updateName();
 				viewModel.updatePercentage();
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.rdb_hbase_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
 		if(viewModel.fromSelected()=='Hive'&&viewModel.toSelected()=='Traditional RDB'){
@@ -1552,7 +1743,29 @@ function begin(){
 				viewModel.updateStatus();
 				viewModel.updateJobId();
 				if(viewModel.jobId()){startProcess();}
-				$("ul.hive_rdb_ul li.active").find("a").click();
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
+				return;
+		};
+		if(viewModel.fromSelected()=='HDFS'&&viewModel.toSelected()=='ICTBase'){
+				$('.hdfs_ict').removeClass('hide');
+				viewModel.prefix('hdfs_ict');
+				viewModel.updateName();
+				viewModel.updatePercentage();
+				viewModel.updateStatus();
+				viewModel.updateJobId();
+				if(viewModel.jobId()){startProcess();}
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
+				return;
+		};
+		if(viewModel.fromSelected()=='ICTBase'&&viewModel.toSelected()=='HDFS'){
+				$('.ict_hdfs').removeClass('hide');
+				viewModel.prefix('ict_hdfs');
+				viewModel.updateName();
+				viewModel.updatePercentage();
+				viewModel.updateStatus();
+				viewModel.updateJobId();
+				if(viewModel.jobId()){startProcess();}
+				$("ul."+viewModel.prefix()+"_ul li.active").find("a").click();
 				return;
 		};
 		$('.other').removeClass('hide');
